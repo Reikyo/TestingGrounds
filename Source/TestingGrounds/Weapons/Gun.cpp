@@ -20,21 +20,21 @@ AGun::AGun()
 	FP_Gun->CastShadow = false;
 	// FP_Gun->SetupAttachment(Mesh1P, TEXT("GripPoint"));
 	FP_Gun->SetupAttachment(RootComponent);
-	
+
 	FP_MuzzleLocation = CreateDefaultSubobject<USceneComponent>(TEXT("MuzzleLocation"));
 	FP_MuzzleLocation->SetupAttachment(FP_Gun);
 	FP_MuzzleLocation->SetRelativeLocation(FVector(0.2f, 48.4f, -10.6f));
 
 	// Note: The ProjectileClass and the skeletal mesh/anim blueprints for Mesh1P, FP_Gun, and VR_Gun
 	// are set in the derived blueprint asset named MyCharacter to avoid direct content references in C++.
-	
+
 	// Create VR Controllers.
 	R_MotionController = CreateDefaultSubobject<UMotionControllerComponent>(TEXT("R_MotionController"));
 	R_MotionController->Hand = EControllerHand::Right;
 	R_MotionController->SetupAttachment(RootComponent);
 	L_MotionController = CreateDefaultSubobject<UMotionControllerComponent>(TEXT("L_MotionController"));
 	L_MotionController->SetupAttachment(RootComponent);
-	
+
 	// Create a gun and attach it to the right-hand VR controller.
 	// Create a gun mesh component
 	VR_Gun = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("VR_Gun"));
@@ -48,7 +48,7 @@ AGun::AGun()
 	VR_MuzzleLocation->SetupAttachment(VR_Gun);
 	VR_MuzzleLocation->SetRelativeLocation(FVector(0.000004, 53.999992, 10.000000));
 	VR_MuzzleLocation->SetRelativeRotation(FRotator(0.0f, 90.0f, 0.0f));		// Counteract the rotation of the VR gun model.
-	
+
 	// Uncomment the following line to turn motion controllers on by default:
 	//bUsingMotionControllers = true;
 }
@@ -107,20 +107,20 @@ void AGun::OnFire()
 			}
 		}
 	}
-	
+
 	// try and play the sound if specified
 	if (FireSound != NULL)
 	{
 		UGameplayStatics::PlaySoundAtLocation(this, FireSound, GetActorLocation());
 	}
-	
+
 	// try and play a firing animation if specified
-	if (FireAnimation != NULL)
+	if (AnimInstance1P != nullptr && FireAnimation1P != nullptr)
 	{
-		// Get the animation object for the arms mesh
-		if (AnimInstance != NULL)
-		{
-			AnimInstance->Montage_Play(FireAnimation, 1.f);
-		}
+		AnimInstance1P->Montage_Play(FireAnimation1P, 1.f);
+	}
+	if (AnimInstance3P != nullptr && FireAnimation3P != nullptr)
+	{
+		AnimInstance3P->Montage_Play(FireAnimation3P, 1.f);
 	}
 }
